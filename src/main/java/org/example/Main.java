@@ -6,6 +6,12 @@ import org.example.api.*;
 public class Main {
     public static void main(String[] args) {
 
+        getSample g=new getSample();
+
+        g.makeCall();
+
+
+
 
 
         }
