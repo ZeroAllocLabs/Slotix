@@ -1,10 +1,7 @@
 package org.example.ds;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CacheUnit {
@@ -15,7 +12,7 @@ public class CacheUnit {
 
     public Slot[] storage =null;
 
-    public Set<Integer> free = new HashSet<>();
+    public Set<Integer> free = new LinkedHashSet<>();
 
     public Map<String,Integer> map=new HashMap<>();
 
@@ -44,7 +41,7 @@ public class CacheUnit {
 
     }
 
-    public int pushData(Byte[] data) {
+    public int pushData(String dataName,Byte[] data) {
         int slot_count = data.length / 1024 + 1;
         if (slot_count > this.size) {
             System.err.println("data is bigger than CacheUnit size");
@@ -62,7 +59,7 @@ public class CacheUnit {
     }
 
 
-    private void handleWrite(Byte[] data) {
+    private int handleWrite(Byte[] data) {
 
         int slot_count = data.length / 1024 + 1;
         int cursor=0;
@@ -70,16 +67,24 @@ public class CacheUnit {
         int index=0;
         for(int i=0;i<size;i++){
             if (index==slot_count){break;}
+
+            //lock free_set else races may happen.
             if (free.contains(i)){
                 slots[index]=i;
                 index++;
-            }}
+            }
 
+        }
+
+        //writing to free set moved out to make slot booking faster.
         for (int i=0;i<slot_count;i++){
             storage[slots[i]].slotWrite(data,index);
             //set next index.
         }
-
+        
+        return 0; //replace with return start index
     }
+
+
 
 }
