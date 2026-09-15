@@ -1,7 +1,7 @@
 package org.example.ds;
 
 public class Slot {
-    Byte[] memory=new Byte[1024];
+    Byte[] memory=new Byte[1024*1024];
     int next=-1;
 
     public void slotWrite(Byte[] data,int index){

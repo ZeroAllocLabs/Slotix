@@ -61,7 +61,7 @@ public class CacheUnit {
 
     private int handleWrite(Byte[] data) {
 
-        int slot_count = data.length / 1024 + 1;
+        int slot_count = (data.length / 1024*1024) + 1;
         int cursor=0;
         int[] slots=new int[slot_count];
         int index=0;
